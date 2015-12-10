@@ -4,9 +4,9 @@ namespace Codeception\Extension;
 
 use Codeception\Event\PrintResultEvent;
 use Codeception\Event\TestEvent;
+use Codeception\Events;
 use Codeception\Lib\Console\Message;
 use Codeception\Platform\Extension;
-use Codeception\Events;
 
 /**
  * Class Profiler
@@ -82,7 +82,9 @@ class Profiler extends Extension
         $time = microtime(true) - $this->suiteTime;
         $signature = $e->getTest()->getTestSignature($e->getTest());
         list($class, $method) = explode('::', $signature);
-        if (!isset($annotations['class']['ignoreProfiler']) && !isset($annotations['method'][$method]['ignoreProfiler'])) {
+        if (!isset($annotations['class']['ignoreProfiler']) &&
+            !isset($annotations['method'][$method]['ignoreProfiler'])
+        ) {
             $this->profile[$class][$method] = $time;
         }
     }
@@ -93,7 +95,6 @@ class Profiler extends Extension
     public function afterPrint(PrintResultEvent $e)
     {
         if (!empty($this->profile)) {
-
             $maxLength = max(array_map('strlen', array_keys($this->profile)));
 
             $this->writeln('');
@@ -141,7 +142,7 @@ class Profiler extends Extension
     }
 
     /**
-     * @param string|Message$text
+     * @param string|Message $text
      * @param float $time
      * @param int $length
      */
@@ -154,10 +155,9 @@ class Profiler extends Extension
         $message->append($this->message('%.3f sec.')->with(round($time, 4)));
         if ($time > $this->errorTimeLimit) {
             $message->style('error');
-        } elseif ($time> $this->warningTimeLimit) {
+        } elseif ($time > $this->warningTimeLimit) {
             $message->style('info');
         }
         $message->writeln();
     }
-
 }
