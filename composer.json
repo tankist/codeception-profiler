@@ -14,8 +14,11 @@
             "Codeception\\Extension\\": "src/"
         }
     },
+    "require": {
+        "codeception/codeception": "~2.1"
+    },
     "require-dev": {
-        "codeception/codeception": "~2.1",
-        "codeception/specify": "*"
+        "codeception/specify": "*",
+        "codeclimate/php-test-reporter": "dev-master"
     }
 }
