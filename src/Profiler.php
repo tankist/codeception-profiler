@@ -18,11 +18,11 @@ class Profiler extends Extension
     /**
      * @var array
      */
-    public static $events = array(
+    public static $events = [
         Events::TEST_BEFORE => 'beforeTest',
         Events::TEST_END => 'endTest',
         Events::RESULT_PRINT_AFTER => 'afterPrint',
-    );
+    ];
 
     /**
      * @var array
@@ -61,26 +61,26 @@ class Profiler extends Extension
     }
 
     /**
-     * @param TestEvent $e
+     * @param TestEvent $event
      */
-    public function beforeTest(TestEvent $e)
+    public function beforeTest(TestEvent $event)
     {
-        $annotations = $e->getTest()->getAnnotations();
+        $annotations = $event->getTest()->getAnnotations();
         $this->suiteTime = microtime(true);
-        list($class,) = explode('::', $e->getTest()->getTestSignature($e->getTest()));
+        list($class,) = explode('::', $event->getTest()->getTestSignature($event->getTest()));
         if (!isset($annotations['class']['ignoreProfiler']) && !isset($this->profile[$class])) {
             $this->profile[$class] = [];
         }
     }
 
     /**
-     * @param TestEvent $e
+     * @param TestEvent $event
      */
-    public function endTest(TestEvent $e)
+    public function endTest(TestEvent $event)
     {
-        $annotations = $e->getTest()->getAnnotations();
+        $annotations = $event->getTest()->getAnnotations();
         $time = microtime(true) - $this->suiteTime;
-        $signature = $e->getTest()->getTestSignature($e->getTest());
+        $signature = $event->getTest()->getTestSignature($event->getTest());
         list($class, $method) = explode('::', $signature);
         if (!isset($annotations['class']['ignoreProfiler']) &&
             !isset($annotations['method'][$method]['ignoreProfiler'])
@@ -90,9 +90,9 @@ class Profiler extends Extension
     }
 
     /**
-     * @param PrintResultEvent $e
+     * @param PrintResultEvent $event
      */
-    public function afterPrint(PrintResultEvent $e)
+    public function afterPrint(PrintResultEvent $event)
     {
         if (!empty($this->profile)) {
             $maxLength = max(array_map('strlen', array_keys($this->profile)));
